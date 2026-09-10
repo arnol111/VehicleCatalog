@@ -1,0 +1,41 @@
+project: VehicleCatalog
+detected: "2026-09-09"
+artifact_store: openspec
+
+context:
+  stack: .NET 10 / ASP.NET Core Web API
+  architecture: Clean Architecture (Domain / Application / Infrastructure / API)
+  framework: ASP.NET Core 10 with OpenAPI
+  nullable: enabled
+  implicit_usings: enabled
+  solution: VehicleCatalog.slnx
+
+projects:
+  - path: "src/API"
+    role: Presentation — ASP.NET Core Web API host
+    framework: Microsoft.NET.Sdk.Web / net10.0
+    test_command: —
+  - path: "src/API.Domain"
+    role: Domain — Entities and repository interfaces
+    framework: Microsoft.NET.Sdk / net10.0
+    test_command: —
+  - path: "src/API.Infrastructure"
+    role: Infrastructure — data access implementations
+    framework: Microsoft.NET.Sdk / net10.0
+    test_command: —
+  - path: "API.Application"
+    role: Application — use-case / service layer
+    framework: Microsoft.NET.Sdk / net10.0
+    test_command: —
+
+strict_tdd: false
+strict_tdd_reason: "No test projects discovered; no workspace-level test command available."
+
+phases:
+  proposal:  openspec/changes/{change}/proposal.md
+  spec:      openspec/changes/{change}/spec.md
+  design:    openspec/changes/{change}/design.md
+  tasks:     openspec/changes/{change}/tasks.md
+  apply:     openspec/changes/{change}/apply-progress.md
+  verify:    openspec/changes/{change}/verify-report.md
+  archive:   openspec/changes/archive/{change}.md

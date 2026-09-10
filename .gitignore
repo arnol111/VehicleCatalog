@@ -1,0 +1,27 @@
+## .NET / C# gitignore
+
+# Build output
+[Bb]in/
+[Oo]bj/
+
+# VS artifacts
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# NuGet
+*.nupkg
+*.snupkg
+packages/
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# dotnet tools
+.dotnet/
+
+# OS
+.DS_Store
+Thumbs.db
