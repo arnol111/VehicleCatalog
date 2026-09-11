@@ -3,6 +3,7 @@ using API.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Infrastructure.Migrations
 {
     [DbContext(typeof(VehicleCatalogDbContext))]
-    partial class VehicleCatalogDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260911003547_InitialCreate")]
+    partial class InitialCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -471,13 +474,11 @@ namespace API.Infrastructure.Migrations
 
             modelBuilder.Entity("API.Domain.Entities.CarModel", b =>
                 {
-                    b.HasOne("API.Domain.Entities.CarBrand", "CarBrand")
+                    b.HasOne("API.Domain.Entities.CarBrand", null)
                         .WithMany()
                         .HasForeignKey("IdCarBrand")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.Navigation("CarBrand");
                 });
 #pragma warning restore 612, 618
         }

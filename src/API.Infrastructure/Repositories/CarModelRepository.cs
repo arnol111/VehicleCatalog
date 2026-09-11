@@ -15,7 +15,14 @@ namespace API.Infrastructure.Repositories
         }
 
         public async Task<IEnumerable<CarModel>> GetAllAsync(CancellationToken cancellationToken = default)
-            => await _context.CarModels.AsNoTracking().ToListAsync(cancellationToken);
+            => await _context.CarModels.Include(m => m.CarBrand).AsNoTracking().ToListAsync(cancellationToken);
+
+        public async Task<IReadOnlyList<CarModel>> GetAllByBrandIdAsync(int brandId, CancellationToken ct = default)
+            => await _context.CarModels
+                .Include(m => m.CarBrand)
+                .Where(m => m.IdCarBrand == brandId)
+                .AsNoTracking()
+                .ToListAsync(ct);
 
         public async Task<CarModel?> GetByIdAsync(int id, CancellationToken cancellationToken = default)
             => await _context.CarModels.FindAsync([id], cancellationToken);
