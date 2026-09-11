@@ -6,14 +6,16 @@ namespace API.Domain.Entities
 {
     public class CarModel
     {
-        public int IdCarModel { get; private set; }
+        public int IdCarModel { get; set; }
         public int IdCarBrand { get; set; }
 
         public string Model { get; set; } = string.Empty;
 
         public int Year { get; set; }
 
-        private CarModel() { }
+        public CarBrand? CarBrand { get; set; }
+
+        public CarModel() { }
 
         public CarModel(int idCarBrand, string model, int year  )
         {

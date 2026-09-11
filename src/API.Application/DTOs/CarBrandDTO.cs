@@ -2,19 +2,12 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace API.Domain.Entities
+namespace API.Application.DTOs
 {
-    public class CarBrand
+    public class CarBrandDTO
     {
         public int IdCarBrand { get; set; }
 
         public string Brand { get; set; } = string.Empty;
-
-        public CarBrand() { }
-
-        public CarBrand(string brand) 
-        {
-            Brand = brand;
-        }
     }
 }
