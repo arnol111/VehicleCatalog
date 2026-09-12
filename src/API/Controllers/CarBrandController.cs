@@ -2,6 +2,7 @@
 using API.Application.CarBrand.Query.GetById;
 using API.Application.Dispatcher;
 using API.Application.DTOs;
+using API.Domain.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -27,9 +28,13 @@ namespace API.Controllers
                
                 carBrandDto = await _dispatcher.Send<GetByIdQuery, CarBrandDTO>(query).ConfigureAwait(false);
             }
-            catch (Exception e)
+            catch (NotFoundException ex)
             {
-                return NotFound(e.Message);
+                return NotFound(new { message = ex.Message });
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, new { message = "An unexpected error occurred." });
             }
             return Ok(carBrandDto);
         }

@@ -1,5 +1,6 @@
 ﻿using API.Application.Dispatcher;
 using API.Application.DTOs;
+using API.Domain.Exceptions;
 using API.Domain.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -22,7 +23,7 @@ namespace API.Application.CarBrand.Query.GetById
             
             if (carBrandFromDB == null)
             {
-                throw new Exception("La marca de carro no existe");
+                throw new NotFoundException("La marca de carro no existe");
             }
             var carBrandDto = new CarBrandDTO() { Brand = carBrandFromDB.Brand, IdCarBrand = carBrandFromDB.IdCarBrand };
 
