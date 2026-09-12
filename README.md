@@ -145,5 +145,54 @@ Inspect the generated migration file before applying to confirm there are no une
 
 ## Known Constraints
 
-- No automated test project exists in this solution yet. Endpoint verification is performed manually via the Scalar UI or `.http` files.
 - The custom mediator resolves handlers from the DI container — all `IRequestHandler<TRequest, TResponse>` implementations must be registered as `Transient` in `ServiceCollectionExtensions.cs`.
+
+---
+
+## Proyecto de Pruebas
+
+El proyecto `test/testAPI` contiene la suite de pruebas automatizadas de la API. Incluye pruebas unitarias para los handlers CQRS y pruebas de integración completas contra SQL Server real mediante Testcontainers.
+
+### Tecnologías utilizadas
+
+| Paquete | Propósito |
+|---------|-----------|
+| `xunit` | Framework de pruebas |
+| `NSubstitute` | Librería de mocks para pruebas unitarias |
+| `Microsoft.AspNetCore.Mvc.Testing` | `WebApplicationFactory` para pruebas de integración HTTP |
+| `Testcontainers.MsSql` | Contenedor SQL Server real para integración (requiere Docker) |
+| `FluentAssertions` | Assertions expresivas |
+| `coverlet.collector` | Cobertura de código |
+
+### Clases de prueba
+
+| Clase | Tipo | Cobertura |
+|-------|------|-----------|
+| `GetAllBrandsQueryHandlerTests` | Unitaria | Handler que retorna todas las marcas |
+| `GetByIdQueryHandlerTests` | Unitaria | Handler que retorna una marca por ID; lanza `NotFoundException` si no existe |
+| `GetAllModelsQueryHandlerTests` | Unitaria | Handler de modelos: sin filtro, filtro exacto, insensible a mayúsculas, marca inexistente |
+| `CarBrandsControllerTests` | Integración | `GET /api/carBrands` con datos y con base de datos vacía |
+| `CarModelsControllerTests` | Integración | `GET /api/carModels` con y sin filtro por marca, case-insensitive, marca inexistente (404) |
+| `CarBrandByIdControllerTests` | Integración | `GET /carBrand?id=` con ID válido (200), inexistente (404) y no numérico (400) |
+
+### Cómo ejecutar las pruebas
+
+**Pruebas unitarias** (no requieren Docker):
+
+```bash
+dotnet test test/testAPI/testAPI.csproj --filter "Category=Unit"
+```
+
+**Pruebas de integración** (requieren Docker Desktop en ejecución):
+
+```bash
+dotnet test test/testAPI/testAPI.csproj --filter "Category=Integration"
+```
+
+> ⚠️ Las pruebas de integración levantan un contenedor SQL Server automáticamente mediante Testcontainers. Docker Desktop debe estar corriendo antes de ejecutar este comando.
+
+**Todas las pruebas**:
+
+```bash
+dotnet test test/testAPI/testAPI.csproj
+```
