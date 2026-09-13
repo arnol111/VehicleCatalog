@@ -4,8 +4,12 @@
     <Project Path="src/API.Domain/API.Domain.csproj" Id="d511e8e0-431f-41d2-8b23-231cee3d1283" />
     <Project Path="src/API.Infrastructure/API.Infrastructure.csproj" Id="74635552-dedf-47ac-9ed1-f853a5c045e4" />
     <Project Path="src/API/API.csproj" />
+    <Project Path="src/VehicleCatalog.Web/VehicleCatalog.Web.csproj" />
   </Folder>
   <Folder Name="/test/">
     <Project Path="test/testAPI/testAPI.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/VehicleCatalog.Web.Tests/VehicleCatalog.Web.Tests.csproj" />
   </Folder>
 </Solution>
