@@ -13,6 +13,7 @@ namespace VehicleCatalog.Web.Tests;
 // CarCatalogService — URL construction tests
 // ────────────────────────────────────────────────────────────
 
+[Trait("Category", "Unit")]
 public class CarCatalogServiceTests
 {
     private static (CarCatalogService service, List<Uri> capturedUris) BuildService(string responseJson)
@@ -77,6 +78,7 @@ public class CarCatalogServiceTests
 // VehiculosController — behaviour tests
 // ────────────────────────────────────────────────────────────
 
+[Trait("Category", "Unit")]
 public class VehiculosControllerTests
 {
     private static Mock<ICarCatalogService> BuildServiceMock(
