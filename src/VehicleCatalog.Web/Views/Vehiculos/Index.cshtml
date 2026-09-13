@@ -1,0 +1,72 @@
+@model VehicleCatalog.Web.Models.VehiculosIndexViewModel
+@{
+    ViewData["Title"] = "Catálogo de Vehículos";
+}
+
+<h1 class="mb-4">Catálogo de Vehículos</h1>
+
+<form method="get" action="/Vehiculos" class="mb-4">
+    <div class="row g-2 align-items-end">
+        <div class="col-md-4">
+            <label for="marca" class="form-label fw-semibold">Filtrar por marca</label>
+            <select id="marca" name="marca" class="form-select" onchange="this.form.submit()">
+                @{
+                    var allSelected = string.IsNullOrEmpty(Model.MarcaSeleccionada);
+                }
+                @if (allSelected)
+                {
+                    <option value="" selected>Todas las marcas</option>
+                }
+                else
+                {
+                    <option value="">Todas las marcas</option>
+                }
+                @foreach (var m in Model.Marcas)
+                {
+                    if (Model.MarcaSeleccionada == m.Name)
+                    {
+                        <option value="@m.Name" selected>@m.Name</option>
+                    }
+                    else
+                    {
+                        <option value="@m.Name">@m.Name</option>
+                    }
+                }
+            </select>
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-primary">Filtrar</button>
+        </div>
+    </div>
+</form>
+
+@if (!Model.Modelos.Any())
+{
+    <div class="alert alert-info" role="alert">
+        No se encontraron modelos para esta marca.
+    </div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-striped table-hover align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th>Modelo</th>
+                    <th>Marca</th>
+                    <th>Año</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var modelo in Model.Modelos)
+                {
+                    <tr>
+                        <td>@modelo.Name</td>
+                        <td>@modelo.BrandName</td>
+                        <td>@modelo.Year</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

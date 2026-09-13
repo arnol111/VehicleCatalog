@@ -1,0 +1,20 @@
+﻿@{
+    ViewData["Title"] = "Error";
+}
+
+<div class="container mt-5">
+    <div class="alert alert-danger" role="alert">
+        <h4 class="alert-heading">Ocurrió un problema</h4>
+        <p>
+            @if (ViewBag.ErrorMessage != null)
+            {
+                @ViewBag.ErrorMessage
+            }
+            else
+            {
+                <span>Ha ocurrido un error inesperado. Por favor, intentá más tarde.</span>
+            }
+        </p>
+    </div>
+    <a href="/" class="btn btn-outline-secondary">Volver al inicio</a>
+</div>
