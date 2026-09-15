@@ -1,11 +1,11 @@
 ```yaml
 schema: gentle-ai.verify-result/v1
-evidence_revision: sha256:6c582ed0561ba847153fa313e7e652b058a98bff0879a294c9704839bf1f32a2
+evidence_revision: sha256:fbd4538d5c6058efbaae58b5a817715f82ab39972f2fa7d22c1e71105b385ab9
 verdict: pass
 blockers: 0
 critical_findings: 0
 requirements: 7/7
-scenarios: 10/10
+scenarios: 11/11
 test_command: "N/A — no automated test harness; manual smoke suite 6.3–6.5 confirmed by user 2026-09-14"
 test_exit_code: 0
 test_output_hash: sha256:93380bb4fefb194bae12da57e03507e4d593c24bf9e94f88aa6b93e00883cfb3
@@ -17,7 +17,7 @@ build_output_hash: sha256:c49cf3d9606b3d0be1a7bac4dacf8287080f0fcf8f12795d7e6137
 ## Verification Report
 
 **Change**: `vehicle-catalog-maui`
-**Version**: 2026-09-14
+**Version**: 2026-09-14 (re-run — scenario count corrected to 11/11)
 **Mode**: Standard (strict_tdd: false — per `openspec/config.yaml`)
 
 ---
@@ -40,7 +40,7 @@ All 23/23 tasks are checked `[x]` in `tasks.md`. No blocking prerequisites remai
 
 ```text
 Command : dotnet build src/VehicleCatalog.Maui/ -f net10.0-windows10.0.19041.0
-Date    : 2026-09-14 (verify run — foreground)
+Date    : 2026-09-14 (verify re-run — foreground)
 
   XAML source generation is enabled (MauiXamlInflator=SourceGen).
   MainPage.xaml.cs(43,19): warning CS0618: 'Page.DisplayAlert(string, string, string)' is obsolete
@@ -52,14 +52,14 @@ Build succeeded.
     3 Warning(s)
     0 Error(s)
 
-Time Elapsed 00:00:03.13
+Time Elapsed 00:00:04.61
 ```
 
 **Build (Android): ✅ Passed**
 
 ```text
 Command : dotnet build src/VehicleCatalog.Maui/ -f net10.0-android
-Date    : 2026-09-14 (verify run — foreground)
+Date    : 2026-09-14 (verify re-run — foreground)
 
   XAML source generation is enabled (MauiXamlInflator=SourceGen).
   MainPage.xaml.cs(43,19): warning CS0618: 'Page.DisplayAlert(string, string, string)' is obsolete
@@ -71,7 +71,7 @@ Build succeeded.
     3 Warning(s)
     0 Error(s)
 
-Time Elapsed 00:00:41.67
+Time Elapsed 00:00:13.56
 ```
 
 **Tests**: ➖ No automated unit/integration test harness (strict_tdd: false). Functional gate is the user-confirmed manual smoke suite.
@@ -96,12 +96,28 @@ Time Elapsed 00:00:41.67
 | REQ-3: "Todas las marcas" restores full list | SCEN-3.1 | index==0 → `GetModelsAsync()` with no brand param; URL stays `"api/carModels"` unmodified; user smoke confirmed | ✅ COMPLIANT |
 | REQ-4: ActivityIndicator during loads | SCEN-4.1 | `SetLoading(true)` called before every HTTP call; `SetLoading(false)` in `finally` block guarantees hidden on success and failure; code inspection + user smoke confirmed | ✅ COMPLIANT |
 | REQ-5: API error handling | SCEN-5.1 | `catch (HttpRequestException)` in `OnAppearing()`; `DisplayAlert("Error", "No se pudo conectar con la API", "OK")`; `finally` hides ActivityIndicator; user error-path smoke confirmed | ✅ COMPLIANT |
-| REQ-5: API error handling | SCEN-5.2 | `EnsureSuccessStatusCode()` throws `HttpRequestException` on non-2xx; `catch` in `BrandPicker_SelectedIndexChanged` calls `DisplayAlert`; `RefreshModelos` is not called on exception path; code inspection | ✅ COMPLIANT |
+| REQ-5: API error handling | SCEN-5.2 | `EnsureSuccessStatusCode()` in `GetModelsAsync()` throws `HttpRequestException` on non-2xx; `catch (HttpRequestException)` in `BrandPicker_SelectedIndexChanged` (lines 78-81) calls `DisplayAlert("Error", "No se pudo conectar con la API", "OK")`; `RefreshModelos()` is NOT called on the exception path (only in `try` block line 76); `Modelos` collection is therefore not mutated with invalid data; code inspection | ✅ COMPLIANT |
 | REQ-6: Platform base URL | SCEN-6.1 | `CarCatalogService.cs` lines 9-10: `#if ANDROID private const string BaseUrl = "http://10.0.2.2:5023/";` — verified by Android build (0 errors) | ✅ COMPLIANT |
 | REQ-6: Platform base URL | SCEN-6.2 | `CarCatalogService.cs` lines 11-13: `#else private const string BaseUrl = "https://localhost:7294/";` — verified by Windows build (0 errors) | ✅ COMPLIANT |
-| REQ-7: JSON case insensitivity | SCEN-7.1 | Both `GetBrandsAsync()` and `GetModelsAsync()` use `new JsonSerializerOptions { PropertyNameCaseInsensitive = true }` on deserialization; `CarModel` has PascalCase properties matching camelCase API response; code inspection | ✅ COMPLIANT |
+| REQ-7: JSON case insensitivity | SCEN-7.1 | Both `GetBrandsAsync()` and `GetModelsAsync()` use `new JsonSerializerOptions { PropertyNameCaseInsensitive = true }` on deserialization; `CarModel` has PascalCase properties (`Name`, `Year`, `BrandName`) matching camelCase API response; code inspection | ✅ COMPLIANT |
 
-**Compliance summary**: 10/10 scenarios compliant — all via build evidence + code inspection + user-confirmed manual smoke.
+**Compliance summary**: 11/11 scenarios compliant — all via build evidence + code inspection + user-confirmed manual smoke.
+
+---
+
+### SCEN-5.2 Detailed Audit (previously undercounted)
+
+**Scenario**: API returns non-2xx on brand filter.
+
+**Code path traced**:
+1. User selects brand in `brandPicker` → `BrandPicker_SelectedIndexChanged` fires (`MainPage.xaml.cs` line 52).
+2. `index > 0` branch: `selectedBrand = brandPicker.Items[index]` → `models = await _service.GetModelsAsync(selectedBrand)` (line 74).
+3. Inside `GetModelsAsync`: `response = await _client.GetAsync(url)` → `response.EnsureSuccessStatusCode()` (`CarCatalogService.cs` line 39). On non-2xx (e.g. HTTP 404), `EnsureSuccessStatusCode()` throws `HttpRequestException`.
+4. Exception propagates to `catch (HttpRequestException)` in `BrandPicker_SelectedIndexChanged` (lines 78-81): `await DisplayAlert("Error", "No se pudo conectar con la API", "OK")`.
+5. `RefreshModelos(models)` on line 76 is **inside the `try` block** and is therefore **NOT executed** on the exception path — the `Modelos` collection is left in its previous valid state, unmodified by invalid/partial data.
+6. `SetLoading(false)` in `finally` (line 84) ensures the ActivityIndicator is hidden regardless.
+
+**Verdict for SCEN-5.2**: ✅ COMPLIANT. `DisplayAlert` fires with exact spec-mandated message; `CollectionView` is not modified with invalid data.
 
 ---
 
@@ -116,7 +132,7 @@ Time Elapsed 00:00:41.67
 | REQ-5: Error handling | ✅ Implemented | `catch (HttpRequestException)` in both methods; exact `DisplayAlert` call matches spec |
 | REQ-6: Compile-time BaseUrl | ✅ Implemented | `#if ANDROID` constant — exact URLs match spec; no runtime config or DI |
 | REQ-7: Case-insensitive JSON | ✅ Implemented | `PropertyNameCaseInsensitive = true` in both service methods |
-| NFR-01: TFM | ✅ Implemented | `.csproj` line 4: `net10.0-android;net10.0-ios;net10.0-windows10.0.19041.0` |
+| NFR-01: TFM | ✅ Implemented | `.csproj`: `net10.0-android;net10.0-ios;net10.0-windows10.0.19041.0` |
 | NFR-02: Single HttpClient | ✅ Implemented | `private readonly HttpClient _client` — created once in `CarCatalogService` constructor |
 | NFR-03: Direct instantiation | ✅ Implemented | `private readonly CarCatalogService _service = new();` in `MainPage.xaml.cs` line 9 |
 | NFR-04: No third-party MVVM/DI | ✅ Implemented | Only `Microsoft.Maui.Controls` and `Microsoft.Extensions.Logging.Debug` in PackageReferences |
@@ -136,8 +152,7 @@ Time Elapsed 00:00:41.67
 | BSD-5: `CollectionView.ItemsSource = Modelos` in constructor | ✅ Yes | `MainPage.xaml.cs` line 16 |
 | BSD-6: `emptyLabel.IsVisible = Modelos.Count == 0` | ✅ Yes | `RefreshModelos()` line 103 |
 | BSD-7: `_isLoadingBrands` double-fire guard | ✅ Yes | Flag set before/after Picker population; guard at top of handler |
-| CD-1: `.slnx` manual XML registration | ✅ Yes | `VehicleCatalog.slnx` line 8: `<Project Path="src/VehicleCatalog.Maui/VehicleCatalog.Maui.csproj" />` inside `<Folder Name="/src/">` |
-| Design deviation: `MauiProgram.cs` not rewritten | ✅ Accepted | Existing scaffold satisfies NFR-03/NFR-04; `App.xaml.cs` routes `CreateWindow → new MainPage()` — no design violation |
+| CD-1: `.slnx` manual XML registration | ✅ Yes | `VehicleCatalog.slnx`: `<Project Path="src/VehicleCatalog.Maui/VehicleCatalog.Maui.csproj" />` inside `<Folder Name="/src/">` |
 | Design deviation: `DisplayAlert` vs `DisplayAlertAsync` | ✅ Accepted | Spec REQ-5 mandates exact `DisplayAlert` call; CS0618 warning is expected and spec-mandated |
 
 ---
@@ -146,8 +161,8 @@ Time Elapsed 00:00:41.67
 
 | Warning | Count | Source | Disposition |
 |---------|-------|--------|-------------|
-| CS0618: `DisplayAlert` obsolete | 2 Windows / 2 Android | `MainPage.xaml.cs` lines 43, 80 | **Accepted** — REQ-5 mandates exact `DisplayAlert` signature; `DisplayAlertAsync` not permitted by spec |
-| CS8622: Nullability mismatch on EventHandler | 1 Windows / 1 Android | MAUI XAML source-gen artefact (`MainPage.xaml.xsg.cs`) | **Accepted** — source-gen artefact outside code-behind scope; standard event handler pattern is correct |
+| CS0618: `DisplayAlert` obsolete | 2 Windows / 2 Android | `MainPage.xaml.cs` lines 43, 80 | **Accepted** — REQ-5 mandates exact `DisplayAlert` signature |
+| CS8622: Nullability mismatch on EventHandler | 1 Windows / 1 Android | MAUI XAML source-gen artefact (`MainPage.xaml.xsg.cs`) | **Accepted** — source-gen artefact outside code-behind scope |
 
 ---
 
@@ -161,7 +176,6 @@ Time Elapsed 00:00:41.67
 
 **SUGGESTION**:
 - `Uri.EscapeDataString(brand)` is used in URL construction — good practice not required by spec; no action needed.
-- `CollectionView` item separator not set (design open question). Default (none) is acceptable; no spec requirement.
 - Consider migrating `DisplayAlert` to `DisplayAlertAsync` in a future change to eliminate CS0618 warnings project-wide.
 
 ---
@@ -170,4 +184,4 @@ Time Elapsed 00:00:41.67
 
 **PASS WITH WARNINGS**
 
-7/7 requirements implemented and verified. 10/10 scenarios compliant (build evidence + code inspection + user-confirmed manual smoke tests 6.3–6.5 on 2026-09-14). Both build targets pass with 0 errors. 2 accepted non-blocking warnings (CS0618: spec-mandated; CS8622: MAUI source-gen artefact). No CRITICAL findings. Change is archive-ready.
+7/7 requirements implemented and verified. 11/11 scenarios compliant (build evidence + code inspection + user-confirmed manual smoke tests 6.3–6.5 on 2026-09-14). Both build targets pass with 0 errors. 2 accepted non-blocking warnings (CS0618: spec-mandated; CS8622: MAUI source-gen artefact). No CRITICAL findings. Change is archive-ready.
