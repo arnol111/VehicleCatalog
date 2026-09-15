@@ -1,6 +1,6 @@
 ```yaml
 schema: gentle-ai.verify-result/v1
-evidence_revision: sha256:verify-2026-09-14-vehicle-catalog-maui
+evidence_revision: sha256:6c582ed0561ba847153fa313e7e652b058a98bff0879a294c9704839bf1f32a2
 verdict: pass
 blockers: 0
 critical_findings: 0
