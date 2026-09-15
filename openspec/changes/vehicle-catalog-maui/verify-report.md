@@ -8,10 +8,10 @@ requirements: 7/7
 scenarios: 10/10
 test_command: "N/A — no automated test harness; manual smoke suite 6.3–6.5 confirmed by user 2026-09-14"
 test_exit_code: 0
-test_output_hash: sha256:manual-confirmed-2026-09-14
+test_output_hash: sha256:93380bb4fefb194bae12da57e03507e4d593c24bf9e94f88aa6b93e00883cfb3
 build_command: "dotnet build src/VehicleCatalog.Maui/ -f net10.0-windows10.0.19041.0 && dotnet build src/VehicleCatalog.Maui/ -f net10.0-android"
 build_exit_code: 0
-build_output_hash: sha256:windows-3w-0e-00:00:03.13-android-3w-0e-00:00:41.67
+build_output_hash: sha256:c49cf3d9606b3d0be1a7bac4dacf8287080f0fcf8f12795d7e61378c50c8b272
 ```
 
 ## Verification Report
