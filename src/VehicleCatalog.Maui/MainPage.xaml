@@ -1,6 +1,37 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="VehicleCatalog.Maui.MainPage">
-    <!-- UI implementation pending (PR 2) -->
+             xmlns:models="clr-namespace:VehicleCatalog.Maui.Models"
+             x:Class="VehicleCatalog.Maui.MainPage"
+             Title="Catálogo de Vehículos">
+
+    <VerticalStackLayout Padding="16" Spacing="8">
+
+        <Picker x:Name="brandPicker"
+                Title="Seleccionar marca"
+                SelectedIndexChanged="BrandPicker_SelectedIndexChanged" />
+
+        <ActivityIndicator x:Name="activityIndicator"
+                           IsRunning="False"
+                           IsVisible="False" />
+
+        <Label x:Name="emptyLabel"
+               Text="No se encontraron modelos"
+               IsVisible="False"
+               HorizontalOptions="Center" />
+
+        <CollectionView x:Name="modelsCollection">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:CarModel">
+                    <VerticalStackLayout Padding="8">
+                        <Label Text="{Binding Name}" FontAttributes="Bold" />
+                        <Label Text="{Binding BrandName}" />
+                        <Label Text="{Binding Year}" />
+                    </VerticalStackLayout>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+    </VerticalStackLayout>
+
 </ContentPage>
