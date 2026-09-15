@@ -7,7 +7,7 @@
 
 ## Status
 
-15/18 tasks complete (PR 1: tasks 1.1–3.4 all complete ✅; PR 2: tasks 4.1–4.6, 5.1–5.2, 6.1–6.2 complete ✅; 6.3–6.5 pending manual).
+18/18 tasks complete (PR 1: tasks 1.1–3.4 ✅; PR 2: tasks 4.1–4.6, 5.1–5.2, 6.1–6.2 ✅; manual smoke tests 6.3–6.5 ✅ confirmed by user on 2026-09-14).
 
 ---
 
@@ -37,11 +37,11 @@
 - [x] 6.1 `dotnet build src/VehicleCatalog.Maui/ -f net10.0-windows10.0.19041.0`: **Build succeeded. 6 Warning(s). 0 Error(s). Time: 00:00:10.59**
 - [x] 6.2 `dotnet build src/VehicleCatalog.Maui/ -f net10.0-android`: **Build succeeded. 3 Warning(s). 0 Error(s). Time: 00:01:35.57**
 
-## Pending Tasks (manual smoke tests — require live app launch)
+## Completed Tasks (manual smoke tests — confirmed by user 2026-09-14)
 
-- [ ] 6.3 Manual smoke test (Windows): start API; run app; verify model list, Picker, brand filter, "Todas las marcas" reset
-- [ ] 6.4 Manual error-path test: stop API; verify `DisplayAlert`; no crash; `ActivityIndicator` hidden
-- [ ] 6.5 Manual empty-state test: select brand with no models; verify empty-state label
+- [x] 6.3 Manual smoke test (Windows): start API; run app; verify model list, Picker, brand filter, "Todas las marcas" reset — **user confirmed OK**
+- [x] 6.4 Manual error-path test: stop API; verify `DisplayAlert`; no crash; `ActivityIndicator` hidden — **user confirmed OK**
+- [x] 6.5 Manual empty-state test: select brand with no models; verify empty-state label — **user confirmed OK**
 
 ---
 

@@ -62,6 +62,6 @@ Chain strategy: pending
 
 - [x] 6.1 Run `dotnet build src/VehicleCatalog.Maui/ -f net10.0-windows10.0.19041.0` — assert zero errors — NFR-06
 - [x] 6.2 Run `dotnet build src/VehicleCatalog.Maui/ -f net10.0-android` — assert zero errors — NFR-06
-- [ ] 6.3 Manual smoke test (Windows target): start API; run MAUI app; verify full model list loads; verify Picker populated; verify brand filter works; verify "Todas las marcas" restores list — SCEN-1.1 / SCEN-2.1 / SCEN-3.1
-- [ ] 6.4 Manual error-path test: stop API; reopen app → `DisplayAlert` appears; verify app does not crash; verify `ActivityIndicator` is hidden — SCEN-5.1
-- [ ] 6.5 Manual empty-state test: select a brand with no associated models → empty-state label visible — SCEN-2.2 / SCEN-1.2
+- [x] 6.3 Manual smoke test (Windows target): start API; run MAUI app; verify full model list loads; verify Picker populated; verify brand filter works; verify "Todas las marcas" restores list — SCEN-1.1 / SCEN-2.1 / SCEN-3.1
+- [x] 6.4 Manual error-path test: stop API; reopen app → `DisplayAlert` appears; verify app does not crash; verify `ActivityIndicator` is hidden — SCEN-5.1
+- [x] 6.5 Manual empty-state test: select a brand with no associated models → empty-state label visible — SCEN-2.2 / SCEN-1.2
