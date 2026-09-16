@@ -5,17 +5,47 @@
 
     <!-- Note: For Android please see also Platforms\Android\Resources\values\colors.xml -->
 
-    <Color x:Key="Primary">#512BD4</Color>
-    <Color x:Key="PrimaryDark">#ac99ea</Color>
-    <Color x:Key="PrimaryDarkText">#242424</Color>
-    <Color x:Key="Secondary">#DFD8F7</Color>
-    <Color x:Key="SecondaryDarkText">#9880e5</Color>
-    <Color x:Key="Tertiary">#2B0B98</Color>
+    <!-- Semantic palette — 24 flat keys (12 tokens × Light/Dark) -->
+    <!-- Primary token -->
+    <Color x:Key="PrimaryLight">#1A73E8</Color>
+    <Color x:Key="PrimaryDark">#4D9FFF</Color>
+    <!-- PrimaryDark semantic variant -->
+    <Color x:Key="PrimaryDarkLight">#1557B0</Color>
+    <Color x:Key="PrimaryDarkDark">#2979CC</Color>
+    <!-- PrimaryLight semantic variant -->
+    <Color x:Key="PrimaryLightLight">#E8F0FE</Color>
+    <Color x:Key="PrimaryLightDark">#1E3A5F</Color>
+    <!-- Secondary token -->
+    <Color x:Key="SecondaryLight">#5F6368</Color>
+    <Color x:Key="SecondaryDark">#9AA0A6</Color>
+    <!-- Accent token -->
+    <Color x:Key="AccentLight">#34A853</Color>
+    <Color x:Key="AccentDark">#57BB75</Color>
+    <!-- Background token -->
+    <Color x:Key="BackgroundLight">#FFFFFF</Color>
+    <Color x:Key="BackgroundDark">#121212</Color>
+    <!-- Surface token -->
+    <Color x:Key="SurfaceLight">#F8F9FA</Color>
+    <Color x:Key="SurfaceDark">#1E1E1E</Color>
+    <!-- TextPrimary token -->
+    <Color x:Key="TextPrimaryLight">#202124</Color>
+    <Color x:Key="TextPrimaryDark">#E8EAED</Color>
+    <!-- TextSecondary token -->
+    <Color x:Key="TextSecondaryLight">#5F6368</Color>
+    <Color x:Key="TextSecondaryDark">#9AA0A6</Color>
+    <!-- Danger token -->
+    <Color x:Key="DangerLight">#EA4335</Color>
+    <Color x:Key="DangerDark">#FF6B6B</Color>
+    <!-- Warning token -->
+    <Color x:Key="WarningLight">#FBBC04</Color>
+    <Color x:Key="WarningDark">#FDD663</Color>
+    <!-- Success token -->
+    <Color x:Key="SuccessLight">#34A853</Color>
+    <Color x:Key="SuccessDark">#57BB75</Color>
 
+    <!-- Neutral palette (retained — referenced by Button, Border, Entry, etc.) -->
     <Color x:Key="White">White</Color>
     <Color x:Key="Black">Black</Color>
-    <Color x:Key="Magenta">#D600AA</Color>
-    <Color x:Key="MidnightBlue">#190649</Color>
     <Color x:Key="OffBlack">#1f1f1f</Color>
 
     <Color x:Key="Gray100">#E1E1E1</Color>
@@ -27,9 +57,8 @@
     <Color x:Key="Gray900">#212121</Color>
     <Color x:Key="Gray950">#141414</Color>
 
-    <SolidColorBrush x:Key="PrimaryBrush" Color="{StaticResource Primary}"/>
-    <SolidColorBrush x:Key="SecondaryBrush" Color="{StaticResource Secondary}"/>
-    <SolidColorBrush x:Key="TertiaryBrush" Color="{StaticResource Tertiary}"/>
+    <SolidColorBrush x:Key="PrimaryBrush" Color="{StaticResource PrimaryLight}"/>
+    <SolidColorBrush x:Key="SecondaryBrush" Color="{StaticResource SecondaryLight}"/>
     <SolidColorBrush x:Key="WhiteBrush" Color="{StaticResource White}"/>
     <SolidColorBrush x:Key="BlackBrush" Color="{StaticResource Black}"/>
 
