@@ -20,11 +20,19 @@ jobs:
         with:
           dotnet-version: '10.0.x'
 
+      # La solución incluye el cliente MAUI (Android/iOS/Windows), que no se compila
+      # en Linux. Este job apunta a los proyectos del servidor y a sus tests.
       - name: Restaurar dependencias
-        run: dotnet restore
+        run: |
+          dotnet restore test/testAPI/testAPI.csproj
+          dotnet restore tests/VehicleCatalog.Web.Tests/VehicleCatalog.Web.Tests.csproj
 
       - name: Compilar
-        run: dotnet build --no-restore --configuration Release
+        run: |
+          dotnet build test/testAPI/testAPI.csproj --no-restore --configuration Release
+          dotnet build tests/VehicleCatalog.Web.Tests/VehicleCatalog.Web.Tests.csproj --no-restore --configuration Release
 
       - name: Ejecutar tests
-        run: dotnet test --no-build --configuration Release --filter "Category=Unit" --verbosity normal
+        run: |
+          dotnet test test/testAPI/testAPI.csproj --no-build --configuration Release --filter "Category=Unit" --verbosity normal
+          dotnet test tests/VehicleCatalog.Web.Tests/VehicleCatalog.Web.Tests.csproj --no-build --configuration Release --filter "Category=Unit" --verbosity normal
