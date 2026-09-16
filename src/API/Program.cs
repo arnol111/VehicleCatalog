@@ -32,7 +32,13 @@ public partial class Program
             });
         }
 
-        app.UseHttpsRedirection();
+        // HTTP plain is required in Development so local clients that cannot trust
+        // the dev certificate (Android emulator via 10.0.2.2) can consume the API.
+        if (!app.Environment.IsDevelopment())
+        {
+            app.UseHttpsRedirection();
+        }
+
         app.UseAuthorization();
         app.MapControllers();
 
