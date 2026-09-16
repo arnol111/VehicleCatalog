@@ -46,22 +46,22 @@ Chain strategy: pending
 
 ## Phase 4: UI — MainPage
 
-- [ ] 4.1 Create `src/VehicleCatalog.Maui/MainPage.xaml` with `VerticalStackLayout` containing: `Picker x:Name="brandPicker"` (SelectedIndexChanged wired); `ActivityIndicator x:Name="activityIndicator"` (IsRunning/IsVisible false); `Label x:Name="emptyLabel"` "No se encontraron modelos" (IsVisible false); `CollectionView x:Name="modelsCollection"` with `DataTemplate x:DataType="models:CarModel"` showing Name / BrandName / Year — REQ-1 / REQ-2 / REQ-4 / NFR-05
-- [ ] 4.2 Create `src/VehicleCatalog.Maui/MainPage.xaml.cs` code-behind: declare `ObservableCollection<CarModel> Modelos`; set `modelsCollection.ItemsSource = Modelos` in constructor; instantiate `CarCatalogService _service = new()` — NFR-03 / NFR-05
-- [ ] 4.3 Implement `OnAppearing()`: call `SetLoading(true)`; load brands into `brandPicker.Items` (prepend "Todas las marcas"); set `_isLoadingBrands` guard around Picker population; call `GetModelsAsync()` → `RefreshModelos()`; wrap in try/catch → `DisplayAlert("Error", "No se pudo conectar con la API", "OK")`; call `SetLoading(false)` in finally — REQ-1 / REQ-4 / REQ-5 / SCEN-1.1 / SCEN-1.2 / SCEN-5.1
-- [ ] 4.4 Implement `BrandPicker_SelectedIndexChanged`: skip body when `_isLoadingBrands` is true; `index == 0` → `GetModelsAsync(null)`; `index > 0` → `GetModelsAsync(selectedBrandName)`; `RefreshModelos()` + `emptyLabel` toggle; try/catch → `DisplayAlert` — REQ-2 / REQ-3 / REQ-5 / SCEN-2.1 / SCEN-2.2 / SCEN-3.1 / SCEN-5.2
-- [ ] 4.5 Implement `SetLoading(bool loading)` helper: toggle `activityIndicator.IsRunning` and `activityIndicator.IsVisible` — REQ-4 / SCEN-4.1
-- [ ] 4.6 Implement `RefreshModelos(List<CarModel> models)` helper: `Modelos.Clear()`; foreach Add; set `emptyLabel.IsVisible = Modelos.Count == 0` — REQ-1 / REQ-2 / REQ-3 / SCEN-1.2 / SCEN-2.2
+- [x] 4.1 Create `src/VehicleCatalog.Maui/MainPage.xaml` with `VerticalStackLayout` containing: `Picker x:Name="brandPicker"` (SelectedIndexChanged wired); `ActivityIndicator x:Name="activityIndicator"` (IsRunning/IsVisible false); `Label x:Name="emptyLabel"` "No se encontraron modelos" (IsVisible false); `CollectionView x:Name="modelsCollection"` with `DataTemplate x:DataType="models:CarModel"` showing Name / BrandName / Year — REQ-1 / REQ-2 / REQ-4 / NFR-05
+- [x] 4.2 Create `src/VehicleCatalog.Maui/MainPage.xaml.cs` code-behind: declare `ObservableCollection<CarModel> Modelos`; set `modelsCollection.ItemsSource = Modelos` in constructor; instantiate `CarCatalogService _service = new()` — NFR-03 / NFR-05
+- [x] 4.3 Implement `OnAppearing()`: call `SetLoading(true)`; load brands into `brandPicker.Items` (prepend "Todas las marcas"); set `_isLoadingBrands` guard around Picker population; call `GetModelsAsync()` → `RefreshModelos()`; wrap in try/catch → `DisplayAlert("Error", "No se pudo conectar con la API", "OK")`; call `SetLoading(false)` in finally — REQ-1 / REQ-4 / REQ-5 / SCEN-1.1 / SCEN-1.2 / SCEN-5.1
+- [x] 4.4 Implement `BrandPicker_SelectedIndexChanged`: skip body when `_isLoadingBrands` is true; `index == 0` → `GetModelsAsync(null)`; `index > 0` → `GetModelsAsync(selectedBrandName)`; `RefreshModelos()` + `emptyLabel` toggle; try/catch → `DisplayAlert` — REQ-2 / REQ-3 / REQ-5 / SCEN-2.1 / SCEN-2.2 / SCEN-3.1 / SCEN-5.2
+- [x] 4.5 Implement `SetLoading(bool loading)` helper: toggle `activityIndicator.IsRunning` and `activityIndicator.IsVisible` — REQ-4 / SCEN-4.1
+- [x] 4.6 Implement `RefreshModelos(List<CarModel> models)` helper: `Modelos.Clear()`; foreach Add; set `emptyLabel.IsVisible = Modelos.Count == 0` — REQ-1 / REQ-2 / REQ-3 / SCEN-1.2 / SCEN-2.2
 
 ## Phase 5: Bootstrap & Solution Registration
 
-- [ ] 5.1 Create `src/VehicleCatalog.Maui/MauiProgram.cs` — minimal `CreateMauiApp()`: `.UseMauiApp<App>()` or direct `MainPage = new MainPage()`; no DI registration — NFR-03 / NFR-04
-- [ ] 5.2 Edit `VehicleCatalog.slnx`: add `<Project Path="src/VehicleCatalog.Maui/VehicleCatalog.Maui.csproj" />` inside the `<Folder Name="/src/">` element (manual XML edit — `dotnet sln` does not support `.slnx`) — Proposal D-2
+- [x] 5.1 Create `src/VehicleCatalog.Maui/MauiProgram.cs` — minimal `CreateMauiApp()`: `.UseMauiApp<App>()` or direct `MainPage = new MainPage()`; no DI registration — NFR-03 / NFR-04
+- [x] 5.2 Edit `VehicleCatalog.slnx`: add `<Project Path="src/VehicleCatalog.Maui/VehicleCatalog.Maui.csproj" />` inside the `<Folder Name="/src/">` element (manual XML edit — `dotnet sln` does not support `.slnx`) — Proposal D-2
 
 ## Phase 6: Build Verification
 
-- [ ] 6.1 Run `dotnet build src/VehicleCatalog.Maui/ -f net10.0-windows10.0.19041.0` — assert zero errors — NFR-06
-- [ ] 6.2 Run `dotnet build src/VehicleCatalog.Maui/ -f net10.0-android` — assert zero errors — NFR-06
-- [ ] 6.3 Manual smoke test (Windows target): start API; run MAUI app; verify full model list loads; verify Picker populated; verify brand filter works; verify "Todas las marcas" restores list — SCEN-1.1 / SCEN-2.1 / SCEN-3.1
-- [ ] 6.4 Manual error-path test: stop API; reopen app → `DisplayAlert` appears; verify app does not crash; verify `ActivityIndicator` is hidden — SCEN-5.1
-- [ ] 6.5 Manual empty-state test: select a brand with no associated models → empty-state label visible — SCEN-2.2 / SCEN-1.2
+- [x] 6.1 Run `dotnet build src/VehicleCatalog.Maui/ -f net10.0-windows10.0.19041.0` — assert zero errors — NFR-06
+- [x] 6.2 Run `dotnet build src/VehicleCatalog.Maui/ -f net10.0-android` — assert zero errors — NFR-06
+- [x] 6.3 Manual smoke test (Windows target): start API; run MAUI app; verify full model list loads; verify Picker populated; verify brand filter works; verify "Todas las marcas" restores list — SCEN-1.1 / SCEN-2.1 / SCEN-3.1
+- [x] 6.4 Manual error-path test: stop API; reopen app → `DisplayAlert` appears; verify app does not crash; verify `ActivityIndicator` is hidden — SCEN-5.1
+- [x] 6.5 Manual empty-state test: select a brand with no associated models → empty-state label visible — SCEN-2.2 / SCEN-1.2

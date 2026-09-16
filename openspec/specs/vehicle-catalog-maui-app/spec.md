@@ -19,7 +19,7 @@ On `OnAppearing()` the app MUST load all vehicle brands from `GET /api/carBrands
 and all vehicle models from `GET /api/carModels` (no `brand` param).
 Each cell in the `CollectionView` MUST display model name, brand name, and year.
 
-#### SCEN-1.1: App opens with API reachable
+#### Scenario: SCEN-1.1 — App opens with API reachable
 
 - GIVEN the API is reachable and returns a non-empty model list
 - WHEN the `MainPage` appears for the first time
@@ -27,7 +27,7 @@ Each cell in the `CollectionView` MUST display model name, brand name, and year.
 - AND the `Picker` is populated with "Todas las marcas" as first item followed by every brand name
 - AND the `ActivityIndicator` is visible during the HTTP calls and hidden once they complete
 
-#### SCEN-1.2: App opens with empty model list
+#### Scenario: SCEN-1.2 — App opens with empty model list
 
 - GIVEN the API returns an empty array for `GET /api/carModels`
 - WHEN `OnAppearing()` completes
@@ -42,7 +42,7 @@ Each cell in the `CollectionView` MUST display model name, brand name, and year.
 Selecting a brand in the `Picker` MUST call `GET /api/carModels?brand=<name>` using
 the exact brand name string. The `brand` parameter MUST NOT be empty or null.
 
-#### SCEN-2.1: User selects a specific brand
+#### Scenario: SCEN-2.1 — User selects a specific brand
 
 - GIVEN the `Picker` is populated and the user selects a brand (e.g. "Toyota")
 - WHEN `SelectedIndexChanged` fires
@@ -50,7 +50,7 @@ the exact brand name string. The `brand` parameter MUST NOT be empty or null.
 - AND the `CollectionView` is refreshed with only models belonging to that brand
 - AND the `ActivityIndicator` is visible during the call
 
-#### SCEN-2.2: Brand with no models
+#### Scenario: SCEN-2.2 — Brand with no models
 
 - GIVEN the user selects a brand that exists but has no associated models
 - WHEN the API returns an empty array
@@ -64,7 +64,7 @@ the exact brand name string. The `brand` parameter MUST NOT be empty or null.
 When the `Picker` selection is "Todas las marcas" (index 0), the app MUST call
 `GET /api/carModels` without any `brand` query parameter.
 
-#### SCEN-3.1: User resets filter to all brands
+#### Scenario: SCEN-3.1 — User resets filter to all brands
 
 - GIVEN a brand filter is currently applied
 - WHEN the user selects "Todas las marcas" in the `Picker`
@@ -79,7 +79,7 @@ An `ActivityIndicator` MUST be shown (`IsRunning = true`, `IsVisible = true`)
 for the entire duration of every HTTP call and hidden immediately after the call
 completes (success or failure).
 
-#### SCEN-4.1: Indicator shown during brand load
+#### Scenario: SCEN-4.1 — Indicator shown during brand load
 
 - GIVEN the app is loading brands on `OnAppearing()`
 - WHEN the HTTP call is in flight
@@ -95,7 +95,7 @@ response the app MUST call `DisplayAlert("Error", "No se pudo conectar con la AP
 The `CollectionView` and `Picker` MUST remain in a consistent (possibly empty) state —
 the app MUST NOT crash.
 
-#### SCEN-5.1: API is unreachable on app open
+#### Scenario: SCEN-5.1 — API is unreachable on app open
 
 - GIVEN the API host is unreachable (network error)
 - WHEN `OnAppearing()` attempts to load brands and models
@@ -103,7 +103,7 @@ the app MUST NOT crash.
 - AND the `ActivityIndicator` is hidden
 - AND the UI remains functional (no crash)
 
-#### SCEN-5.2: API returns non-2xx on brand filter
+#### Scenario: SCEN-5.2 — API returns non-2xx on brand filter
 
 - GIVEN the user selects a brand and the API returns a non-2xx response (e.g. 404 unknown brand)
 - WHEN `SelectedIndexChanged` processes the HTTP response
@@ -121,13 +121,13 @@ the app MUST NOT crash.
 
 No runtime configuration or DI injection is used for this value.
 
-#### SCEN-6.1: Android build uses Android base URL
+#### Scenario: SCEN-6.1 — Android build uses Android base URL
 
 - GIVEN the project is compiled with `net10.0-android`
 - WHEN `CarCatalogService` is instantiated
 - THEN `BaseUrl` resolves to `http://10.0.2.2:5023/`
 
-#### SCEN-6.2: Windows build uses HTTPS base URL
+#### Scenario: SCEN-6.2 — Windows build uses HTTPS base URL
 
 - GIVEN the project is compiled with `net10.0-windows10.0.19041.0`
 - WHEN `CarCatalogService` is instantiated
@@ -140,7 +140,7 @@ No runtime configuration or DI injection is used for this value.
 `HttpClient` responses MUST be deserialized with `PropertyNameCaseInsensitive = true`
 so that camelCase API responses map correctly to PascalCase C# model properties.
 
-#### SCEN-7.1: API returns camelCase JSON
+#### Scenario: SCEN-7.1 — API returns camelCase JSON
 
 - GIVEN the API returns `[{"id":1,"name":"Toyota","year":2023,"brandName":"Toyota"}]`
 - WHEN `CarCatalogService` deserializes the response

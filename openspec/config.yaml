@@ -1,11 +1,11 @@
 project: VehicleCatalog
-detected: "2026-09-09"
+detected: "2026-09-15"
 artifact_store: openspec
 
 context:
-  stack: .NET 10 / ASP.NET Core Web API
-  architecture: Clean Architecture (Domain / Application / Infrastructure / API)
-  framework: ASP.NET Core 10 with OpenAPI
+  stack: .NET 10 / ASP.NET Core Web API + ASP.NET Core MVC + .NET MAUI (C#, XAML)
+  architecture: Clean Architecture (Domain / Application / Infrastructure / API) + MAUI client
+  framework: ASP.NET Core 10, .NET MAUI, OpenAPI
   nullable: enabled
   implicit_usings: enabled
   solution: VehicleCatalog.slnx
@@ -14,26 +14,52 @@ projects:
   - path: "src/API"
     role: Presentation — ASP.NET Core Web API host
     framework: Microsoft.NET.Sdk.Web / net10.0
-    test_command: —
+    test_command: dotnet test test/testAPI/
   - path: "src/API.Domain"
     role: Domain — Entities and repository interfaces
     framework: Microsoft.NET.Sdk / net10.0
-    test_command: —
+    test_command: dotnet test test/testAPI/
   - path: "src/API.Infrastructure"
     role: Infrastructure — data access implementations
     framework: Microsoft.NET.Sdk / net10.0
-    test_command: —
-  - path: "API.Application"
+    test_command: dotnet test test/testAPI/
+  - path: "src/API.Application"
     role: Application — use-case / service layer
     framework: Microsoft.NET.Sdk / net10.0
-    test_command: —
+    test_command: dotnet test test/testAPI/
   - path: "src/VehicleCatalog.Web"
     role: Presentation — ASP.NET Core MVC frontend
     framework: Microsoft.NET.Sdk.Web / net10.0
     test_command: dotnet test tests/VehicleCatalog.Web.Tests/
+  - path: "src/VehicleCatalog.Maui"
+    role: MAUI client — mobile/desktop app consuming REST API
+    framework: Microsoft.NET.Sdk / net10.0 (MAUI)
+    test_command: —
+
+testing:
+  runner: xunit (v2.9.3)
+  mocking:
+    - Moq (Web.Tests)
+    - NSubstitute (testAPI)
+  assertions: FluentAssertions (testAPI)
+  coverage: coverlet.collector
+  integration: Microsoft.AspNetCore.Mvc.Testing + Testcontainers.MsSql (testAPI)
+  test_projects:
+    - path: "test/testAPI"
+      scope: API + Domain + Application + Infrastructure (integration + unit)
+      filter: "Category=Unit" (CI uses this filter)
+    - path: "tests/VehicleCatalog.Web.Tests"
+      scope: VehicleCatalog.Web (unit)
+  workspace_test_command: dotnet test
+  ci_test_command: "dotnet test --no-build --configuration Release --filter \"Category=Unit\" --verbosity normal"
+  maui_tests: false
 
 strict_tdd: false
-strict_tdd_reason: "No test projects discovered; no workspace-level test command available."
+strict_tdd_reason: >
+  No single workspace-level test command covers every in-scope project.
+  MAUI project (src/VehicleCatalog.Maui) has no test project.
+  Two independent test projects exist (test/testAPI, tests/VehicleCatalog.Web.Tests)
+  with separate commands; no runner covers all projects uniformly.
 
 phases:
   proposal:  openspec/changes/{change}/proposal.md
