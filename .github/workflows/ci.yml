@@ -36,3 +36,24 @@ jobs:
         run: |
           dotnet test test/testAPI/testAPI.csproj --no-build --configuration Release --filter "Category=Unit" --verbosity normal
           dotnet test tests/VehicleCatalog.Web.Tests/VehicleCatalog.Web.Tests.csproj --no-build --configuration Release --filter "Category=Unit" --verbosity normal
+
+  maui-android:
+    name: Build MAUI (Android)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Obtener el código
+        uses: actions/checkout@v4
+
+      - name: Instalar .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Instalar el workload de Android
+        run: dotnet workload install maui-android
+
+      # El cliente MAUI se condiciona por sistema operativo: en Linux compila
+      # únicamente net10.0-android, que es el target que se valida acá.
+      - name: Compilar el cliente MAUI (Android)
+        run: dotnet build src/VehicleCatalog.Maui/VehicleCatalog.Maui.csproj --configuration Release --framework net10.0-android
