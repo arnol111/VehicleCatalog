@@ -1,16 +1,16 @@
-﻿using System.Collections.ObjectModel;
+using System.Collections.ObjectModel;
 using VehicleCatalog.Maui.Models;
 using VehicleCatalog.Maui.Services;
 
 namespace VehicleCatalog.Maui;
 
-public partial class MainPage : ContentPage
+public partial class ModelosPage : ContentPage
 {
     private readonly CarCatalogService _service = new();
     public ObservableCollection<CarModel> Modelos { get; } = new();
     private bool _isLoadingBrands;
 
-    public MainPage()
+    public ModelosPage()
     {
         InitializeComponent();
         modelsCollection.ItemsSource = Modelos;

@@ -1,9 +1,9 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:models="clr-namespace:VehicleCatalog.Maui.Models"
-             x:Class="VehicleCatalog.Maui.MainPage"
-             Title="Catálogo de Vehículos">
+             x:Class="VehicleCatalog.Maui.ModelosPage"
+             Title="Modelos">
 
     <VerticalStackLayout Padding="16" Spacing="8">
 
@@ -18,16 +18,19 @@
         <Label x:Name="emptyLabel"
                Text="No se encontraron modelos"
                IsVisible="False"
-               HorizontalOptions="Center" />
+               HorizontalOptions="Center"
+               Style="{StaticResource LabelSecondary}" />
 
         <CollectionView x:Name="modelsCollection">
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="models:CarModel">
-                    <VerticalStackLayout Padding="8">
-                        <Label Text="{Binding Name}" FontAttributes="Bold" />
-                        <Label Text="{Binding BrandName}" />
-                        <Label Text="{Binding Year}" />
-                    </VerticalStackLayout>
+                    <Border Style="{StaticResource CollectionItemSeparator}">
+                        <VerticalStackLayout Padding="8">
+                            <Label Text="{Binding Name}" FontAttributes="Bold" />
+                            <Label Text="{Binding BrandName}" />
+                            <Label Text="{Binding Year}" />
+                        </VerticalStackLayout>
+                    </Border>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
