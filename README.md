@@ -230,3 +230,143 @@ El workflow ejecuta los siguientes pasos en un runner `ubuntu-latest`:
 Las pruebas de integración **no se ejecutan en CI** porque requieren Docker. Se ejecutan localmente o en un entorno con Docker disponible.
 
 Los resultados del workflow se pueden ver en la pestaña **Actions** del repositorio en GitHub.
+
+---
+
+## Cómo ejecutar la solución
+
+Esta sección cubre la ejecución local de los tres clientes de la solución: la API REST, la aplicación web MVC y la aplicación móvil MAUI.
+
+### Prerrequisitos
+
+- [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0)
+- **EF Core CLI** — herramienta global para migraciones:
+  ```bash
+  dotnet tool install -g dotnet-ef
+  ```
+- **SQL Server** (instancia local en `localhost,1433`) o **Docker Desktop** como alternativa para SQL Server en contenedor
+- **Certificado HTTPS de desarrollo** — requerido para HTTPS local:
+  ```bash
+  dotnet dev-certs https --trust
+  ```
+- **Android SDK + emulador** *(opcional — solo para MAUI Android)* — provisto por Visual Studio o Android Studio
+
+### Configuración de la base de datos
+
+La API requiere una instancia de SQL Server accesible en la cadena de conexión configurada. Las opciones más comunes son:
+
+- **SQL Server local**: instancia instalada en `localhost,1433` (autenticación de Windows o SQL)
+- **Docker Desktop**: contenedor SQL Server para el entorno de desarrollo
+
+### Cadena de conexión
+
+La cadena de conexión se configura en `src/API/appsettings.Development.json`. Ese archivo sirve como plantilla; **no copiar el valor de contraseña directamente en código fuente ni en variables de entorno en texto plano**.
+
+El formato de la clave es:
+
+```
+Server=<servidor>;Database=VehicleCatalog;User Id=<usuario>;<clave_de_contraseña>=<valor>;
+```
+
+> Para ver el formato exacto de la cadena de conexión utilizado en desarrollo, consultar `src/API/appsettings.Development.json` como plantilla. **No registrar credenciales reales en el repositorio.**
+
+**Recomendación — User Secrets** (evita exponer credenciales en el repositorio):
+
+```bash
+dotnet user-secrets set "ConnectionStrings:DefaultConnection" "<value>" --project src/API
+```
+
+### Migraciones y datos iniciales
+
+La base de datos y el esquema se crean mediante EF Core Migrations. El `DbContext` (`VehicleCatalogDbContext`) vive en `src/API.Infrastructure`; el proyecto de arranque con `IDesignTimeDbContextFactory` es `src/API`.
+
+**Agregar una nueva migración:**
+
+```bash
+dotnet ef migrations add <Name> --project src/API.Infrastructure --startup-project src/API
+```
+
+**Aplicar migraciones a la base de datos:**
+
+```bash
+dotnet ef database update --project src/API.Infrastructure --startup-project src/API
+```
+
+Los datos iniciales (seeds) se aplican automáticamente mediante `HasData` al ejecutar `database update`: **10 marcas** y **50 modelos** de vehículos quedan precargados en la base de datos sin ninguna acción adicional.
+
+### Ejecutar la API
+
+> La API debe estar en ejecución antes de iniciar VehicleCatalog.Web o VehicleCatalog.Maui.
+
+```bash
+dotnet run --project src/API
+```
+
+La API queda disponible en:
+
+| Protocolo | URL |
+|-----------|-----|
+| HTTP | `http://localhost:5023` |
+| HTTPS | `https://localhost:7294` |
+
+Herramientas de desarrollo (solo en modo Development):
+
+- Scalar (UI interactiva): `http://localhost:5023/scalar/v1`
+- OpenAPI JSON: `http://localhost:5023/openapi/v1.json`
+
+> **Nota:** `UseHttpsRedirection` está deshabilitado en modo Development. Esto permite que el emulador Android acceda a la API por HTTP sobre el puerto 5023 sin redireccionamiento forzado a HTTPS.
+
+### Ejecutar VehicleCatalog.Web
+
+> La API debe estar en ejecución antes de iniciar la aplicación web.
+
+```bash
+dotnet run --project src/VehicleCatalog.Web
+```
+
+La aplicación web queda disponible en:
+
+| Protocolo | URL |
+|-----------|-----|
+| HTTP | `http://localhost:5025` |
+| HTTPS | `https://localhost:7296` |
+
+La URL base de la API se configura en `src/VehicleCatalog.Web/appsettings.json` bajo la clave `ApiSettings:BaseUrl`, que apunta a `https://localhost:7294/`.
+
+> **Nota de desarrollo:** La aplicación web usa `DangerousAcceptAnyServerCertificateValidator` para aceptar el certificado autofirmado de la API en entorno de desarrollo. No habilitar este validador en producción.
+
+### Ejecutar VehicleCatalog.Maui
+
+> La API debe estar en ejecución antes de iniciar la aplicación MAUI.
+
+**Emulador Android:**
+
+```bash
+dotnet run --project src/VehicleCatalog.Maui -f net10.0-android
+```
+
+El emulador Android accede a la API mediante la URL de loopback del host: `http://10.0.2.2:5023/`
+
+**Windows:**
+
+```bash
+dotnet run --project src/VehicleCatalog.Maui -f net10.0-windows10.0.19041.0
+```
+
+La aplicación selecciona automáticamente la URL correcta según la plataforma en tiempo de ejecución (`CarCatalogService`).
+
+### Ejecutar las pruebas
+
+**Pruebas unitarias** (no requieren Docker ni base de datos):
+
+```bash
+dotnet test --filter "Category=Unit" --configuration Release
+```
+
+**Pruebas de integración** (requieren Docker Desktop en ejecución):
+
+```bash
+dotnet test --filter "Category=Integration"
+```
+
+> ⚠️ Las pruebas de integración levantan un contenedor SQL Server automáticamente mediante Testcontainers. Docker Desktop debe estar en ejecución antes de ejecutar este comando.
